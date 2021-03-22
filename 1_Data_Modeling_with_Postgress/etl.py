@@ -6,6 +6,13 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Process the song data file and insert the data into artists and songs tables. 
+
+    Args:
+        cur: psycopg2 cursor created from the connection with the DB;
+        filepath: root directory where the other directories with the song data files are.
+    """
     # open song file
     df = pd.read_json(filepath, lines = True)
 
@@ -20,6 +27,20 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    """
+    Preprocess the log data in 3 steps and insert the data into time, users and songplays tables.
+    The steps are:
+    1. Extract the ts data, transform it into datetime format and extract "hour", 
+    "day", "week", "month", "year", "weekday" features for time table;
+    2. Extact the "stat_time", "hour", "day", "week", "month", "year", "weekday" features for users table;
+    3. Use the song, artist and length data to get artist_id and song_id by querying it from the DB and 
+    insert it with the other elements of data into songplays table.
+
+    Args:
+        cur: psycopg2 cursor created from the connection with the DB;
+        filepath: root directory where the other directories with the log data files are.
+    """
+
     # open log file
     df = pd.read_json(filepath, lines = True)
 
@@ -64,6 +85,19 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Extract all paths of the files stored in the parsed filepath, 
+    apply the parsed function to each datafile commiting the operation 
+    at the end of each step.  
+
+    Args:
+        cur: psycopg2 cursor created from the connection with the DB;
+        conn: connection with the DB established through psycopg2;
+        filepath: root directory where the other directories with the log data files are;
+        func: one of the two functions created above - process_log_file() or process_log_file()
+
+    """
+
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -83,6 +117,10 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    Establish the connection, create a cursor and process the data calling first the process_data 
+    function with process_song_file and them with process_log_file as input.
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 

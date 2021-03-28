@@ -19,5 +19,6 @@ The goal of the project is to use Cassandra due to its characteristics like:
 - Denormalized Data Modeling (optimized for fast reading);
 - Optimization for writes;
 - Linear Scalability;
-- High Availability;   
+- High Availability;  
+
 and create a NoSQL Database through an ETL pipeline that processes the data and makes it possible for the analytical team to perform the desired queries on the data with a great performance that Apache Cassandra brings.

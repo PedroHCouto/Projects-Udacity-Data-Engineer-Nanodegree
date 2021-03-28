@@ -1,6 +1,5 @@
 # Data Engineering Projects
-!
-´[image](/images/opening.png)
+![image](/images/opening.png)
 
 This repository contains all the projects developed throughout the Data Engineering Nanodegree from Udacity.
 

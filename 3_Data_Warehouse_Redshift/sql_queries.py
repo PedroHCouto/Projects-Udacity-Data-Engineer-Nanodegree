@@ -136,9 +136,27 @@ staging_songs_copy = ("""
 # FINAL TABLES
 
 songplay_table_insert = ("""
+INSERT INTO songplay_table (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) 
+SELECT CONVERT(datetime, e.ts)
+       e.user_id,
+       e.level,
+       s.song_id,
+       s.artist_id,
+       e.session_id,
+       e.location,
+       e.user_agent
+FROM staging_events_table as e
+JOIN staging_songs_table as s ON (e.artist = s.artist_name AND e.song = s.title);
 """)
 
 user_table_insert = ("""
+INSERT INTO user_table (user_id, first_name, last_name, gender, level)
+SELECT user_id,
+       first_name,
+       last_name,
+       gender,
+       level
+FROM staging_events_table; 
 """)
 
 song_table_insert = ("""
@@ -149,6 +167,7 @@ artist_table_insert = ("""
 
 time_table_insert = ("""
 """)
+
 
 # QUERY LISTS
 

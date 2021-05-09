@@ -215,7 +215,7 @@ LinkedIn: https://www.linkedin.com/in/pdr-couto
 Kaggle: https://www.kaggle.com/pedrocouto39   
 XING: https://www.xing.com/profile/Pedro_Couto8/cv     
 
-Project Link: [https://github.com/PedroHCouto/Data-Eng-Nanodegree-Data-Modeling-with-Postgres](https://github.com/PedroHCouto/Data-Eng-Nanodegree-Data-Modeling-with-Postgres)
+Project Link: [https://github.com/PedroHCouto/Data-Eng-Nanodegree-Data-Warehouse-with-Redshift](https://github.com/PedroHCouto/Projects-Udacity-Data-Engineering-Nanodegree/tree/master/3_Data_Warehouse_Redshift)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

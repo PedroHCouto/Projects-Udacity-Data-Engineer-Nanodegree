@@ -1,6 +1,11 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-# Data Engineer Nanodegree - Project 1: Data Modeling with Postgres
+# Data Engineer Nanodegree - Project 3: Data Warehouse with AWS Redshift
+
+<p style="text-align:center;">
+  <img src="./images/1_opening.png" alt="Logo" width="500" height="300">
+</p>
+
 
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
@@ -83,7 +88,7 @@ The data in those files mentioned above are uploaded to Redshift into two **stag
 This projects makes use of the same Star Schema developed in project one. The star schema is very useful for analytical purpose, therefore for OLAP operations. Once this schema is more denormalized it works better for complex queries and, therefore, for AGGREGATIONS demanding fewer JOINs to get the desired dataset.   
 The schema is shown in the figure below with the features and their types for each table.
 
-![image](Sparkifydb_ERD.png)
+![image](./images/2_Sparkifydb_ERD.png)
 
 As we can see, there are 5 tables in the database forming the star schema. These tables are:
 - **songplays**: fact table

@@ -2,8 +2,8 @@
 
 # Data Engineer Nanodegree - Project 3: Data Warehouse with AWS Redshift
 
-<p style="text-align:center;">
-  <img src="./images/1_opening.png" alt="Logo" width="500" height="300">
+<p align="center">
+    <img src="./images/1_opening.png" width="500" height="300">
 </p>
 
 

@@ -57,7 +57,7 @@ CREATE TABLE staging_songs_table (
 
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplay_table (
-    songplay_id     INTEGER        IDENTITY(0, 1) NOT NULL distkey,
+    songplay_id     INTEGER        IDENTITY(0, 1) NOT NULL PRIMARY KEY distkey,
     start_time      TIMESTAMP      NOT NULL,
     user_id         VARCHAR        NOT NULL,
     level           VARCHAR(4)     NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS songplay_table (
 
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS user_table (
-    user_id         VARCHAR        NOT NULL,
+    user_id         VARCHAR        NOT NULL PRIMARY KEY,
     first_name      VARCHAR,
     last_name       VARCHAR,
     gender          CHAR,
@@ -80,7 +80,7 @@ diststyle all;
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS song_table (
-    song_id         VARCHAR        NOT NULL sortkey,
+    song_id         VARCHAR        NOT NULL PRIMARY KEY sortkey,
     title           TEXT           NOT NULL,
     artist_id       VARCHAR        NOT NULL,
     year            INTEGER        NOT NULL,
@@ -90,7 +90,7 @@ diststyle all;
 
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS artist_table (
-    artist_id       VARCHAR        NOT NULL sortkey,
+    artist_id       VARCHAR        NOT NULL PRIMARY KEY sortkey,
     name            TEXT           NOT NULL,
     location        VARCHAR,
     latitude        VARCHAR,
@@ -100,7 +100,7 @@ diststyle all;
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time_table (
-    time_id         INTEGER         IDENTITY(1, 1) distkey,
+    time_id         INTEGER        IDENTITY(1, 1) PRIMARY KEY distkey,
     start_time      TIMESTAMP      NOT NULL,
     hour            INTEGER        NOT NULL,
     day             INTEGER        NOT NULL,
@@ -148,12 +148,12 @@ songplay_table_insert = ("""
            location,
            user_agent
     FROM staging_events_table e
-    JOIN staging_songs_table s ON (e.song = s.title AND e.artist = s.artist_name)                            
+    JOIN staging_songs_table s ON (e.song = s.title AND e.artist = s.artist_name AND e.length = s.duration)                            
 """)
 
 user_table_insert = ("""
 INSERT INTO user_table (user_id, first_name, last_name, gender, level)
-SELECT user_id,
+SELECT DISTINCT (user_id),
        first_name,
        last_name,
        gender,
@@ -163,7 +163,7 @@ FROM staging_events_table;
 
 song_table_insert = ("""
 INSERT INTO song_table (song_id, title, artist_id, year, duration)
-SELECT song_id,
+SELECT DISTINCT (song_id),
        title,
        artist_id,
        year, 
@@ -173,7 +173,7 @@ FROM staging_songs_table
 
 artist_table_insert = ("""
 INSERT INTO artist_table (artist_id, name, location, latitude, longitude)
-SELECT artist_id,
+SELECT DISTINCT (artist_id),
        artist_name,
        artist_location,
        artist_latitude,

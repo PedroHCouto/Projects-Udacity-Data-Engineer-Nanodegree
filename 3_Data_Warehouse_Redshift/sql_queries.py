@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS songplay_table (
 
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS user_table (
-    user_id         VARCHAR        NOT NULL PRIMARY KEY,
+    user_id         VARCHAR        NOT NULL,
     first_name      VARCHAR,
     last_name       VARCHAR,
     gender          CHAR,
@@ -205,11 +205,6 @@ create_table_queries = [staging_events_table_create,
                         song_table_create, 
                         artist_table_create, 
                         time_table_create]
-#create_table_queries = [songplay_table_create, 
-#                        user_table_create, 
-#                        song_table_create, 
-#                        artist_table_create, 
-#                        time_table_create]
 
 drop_table_queries = [staging_events_table_drop, 
                      staging_songs_table_drop, 
@@ -218,11 +213,6 @@ drop_table_queries = [staging_events_table_drop,
                      song_table_drop, 
                      artist_table_drop, 
                      time_table_drop]
-#drop_table_queries = [songplay_table_drop, 
-#                      user_table_drop, 
-#                      song_table_drop, 
-#                      artist_table_drop, 
-#                      time_table_drop]
 
 copy_table_queries = [staging_events_copy, staging_songs_copy]
 

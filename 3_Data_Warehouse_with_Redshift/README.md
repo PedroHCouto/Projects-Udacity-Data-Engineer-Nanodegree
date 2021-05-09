@@ -15,6 +15,7 @@
     <li><a href="#data">Data</a></li>
     <li><a href="#erd-schema">ERD Schema</a></li>
     <li><a href="#etl">ETL</a></li>
+    <li><a href="#files">Files</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#built-with">Built With</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -230,7 +231,7 @@ LinkedIn: https://www.linkedin.com/in/pdr-couto
 Kaggle: https://www.kaggle.com/pedrocouto39   
 XING: https://www.xing.com/profile/Pedro_Couto8/cv     
 
-Project Link: [https://github.com/PedroHCouto/Data-Eng-Nanodegree-Data-Warehouse-with-Redshift](https://github.com/PedroHCouto/Projects-Udacity-Data-Engineering-Nanodegree/tree/master/3_Data_Warehouse_Redshift)
+Project Link: [https://github.com/PedroHCouto/Data-Eng-Nanodegree-Data-Warehouse-with-Redshift](https://github.com/PedroHCouto/Projects-Udacity-Data-Engineering-Nanodegree/tree/master/3_Data_Warehouse_with_Redshift)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

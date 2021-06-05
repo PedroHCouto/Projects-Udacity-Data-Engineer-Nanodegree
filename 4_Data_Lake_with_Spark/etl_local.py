@@ -1,3 +1,6 @@
+import findspark
+findspark.init()
+
 import configparser
 from datetime import datetime
 import os
@@ -9,18 +12,20 @@ from pyspark.sql.types import StructType, StructField, IntegerType,\
         StringType, DateType, FloatType, DoubleType
 from pyspark.sql.window import Window
 
-config = configparser.ConfigParser()
-config.read('dl.cfg')
-
-os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+#config = configparser.ConfigParser()
+#config.read('dl.cfg')
+#
+#os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
+#os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
     spark = SparkSession \
         .builder \
-        .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
+        .appName('test')\
         .getOrCreate()
+        #.config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
+        #.getOrCreate()
     return spark
 
 
@@ -53,7 +58,9 @@ def process_song_data(spark, input_data, output_data):
     songs_table = df.selectExpr(columns_songs)
     
     # write songs table to parquet files partitioned by year and artist
-    songs_table.write.csv(output_data, header = True, index = False)
+    songs_table.write.csv(os.path.join(output_data, 'songs_table'), 
+                          mode = 'overwrite',
+                          header = True)
 
     # extract columns to create artists table
     columns_artists = ['artist_id',
@@ -65,7 +72,9 @@ def process_song_data(spark, input_data, output_data):
     artists_table = df.selectExpr(columns_artists)
     
     # write artists table to parquet files
-    artists_table.write.csv(output_data, header = True, index = False)
+    artists_table.write.csv(os.path.join(output_data, 'artists_table'),
+                            mode = 'overwrite',
+                            header = True)
 
 
 def process_log_data(spark, input_data, output_data):
@@ -73,21 +82,22 @@ def process_log_data(spark, input_data, output_data):
     log_data = os.path.join(input_data, 'log_data')
 
     # read log data file
-    df = spark.read.csv(log_data, header = True)
+    df = spark.read.json(log_data)
     
     # filter by actions for song plays
     df = df.where(df.page == 'NextSong')
-
     # extract columns for users table 
     columns_users = ['userId as user_id',
                      'firstName as first_name',
                      'lastName as last_name',
                      'gender',
                      'level']   
-    users_table = selectExpr(columns_users)
+    users_table = df.selectExpr(columns_users)
     
     # write users table to parquet files
-    users_table.write.csv(output_data, header = True, index = False)
+    users_table.write.csv(os.path.join(output_data, 'users_table'), 
+                          mode = 'overwrite',
+                          header = True)
 
     # create timestamp column from original timestamp column
     df = df.withColumn('start_time', F.to_timestamp(df.ts / 1000))
@@ -103,7 +113,9 @@ def process_log_data(spark, input_data, output_data):
     time_table = df.select(columns_time)
 
     # write time table to parquet files partitioned by year and month
-    time_table.write.csv(output_data, header = True, index = False)
+    time_table.write.csv(os.path.join(output_data, 'time_table'), 
+                         mode = 'overwrite',
+                         header = True)
 
 
     # read in song data to use for songplays table
@@ -135,17 +147,20 @@ def process_log_data(spark, input_data, output_data):
     songplays_table = df.join(song_df, on = condition, how = 'left_outer').selectExpr(columns_songplay)
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table.write.csv(output_data, header = True, index = False)
+    songplays_table.write.csv(os.path.join(output_data, 'songplays_table'), 
+                              mode = 'overwrite',
+                              header = True)
 
 
 def main():
     spark = create_spark_session()
-    input_data = "s3a://udacity-dend/"
-    output_data = ""
+    input_data = "./data"
+    output_data = "./created_tables/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
 
-
+    print('job finished')
+    
 if __name__ == "__main__":
     main()

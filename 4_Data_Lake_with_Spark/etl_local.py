@@ -146,6 +146,10 @@ def process_log_data(spark, input_data, output_data):
     condition = [df.song == song_df.title, df.length == song_df.duration, df.artist == song_df.artist_name]
     songplays_table = df.join(song_df, on = condition, how = 'left_outer').selectExpr(columns_songplay)
 
+    # create songplay_id column
+    songplays_table = songplays_table.withColumn('songplay_id',
+        F.row_number().over(Window.orderBy(F.monotonically_increasing_id())))
+
     # write songplays table to parquet files partitioned by year and month
     songplays_table.write.csv(os.path.join(output_data, 'songplays_table'), 
                               mode = 'overwrite',

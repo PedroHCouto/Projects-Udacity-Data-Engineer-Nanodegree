@@ -20,6 +20,12 @@ from pyspark.sql.window import Window
 
 
 def create_spark_session():
+    """This functions simply creates a spark session 
+    with to work local for prototyping and testing.
+
+    Returns:
+        spark: an object containing a SparkSession. 
+    """
     spark = SparkSession \
         .builder \
         .appName('test')\
@@ -30,6 +36,17 @@ def create_spark_session():
 
 
 def process_song_data(spark, input_data, output_data):
+    """Function to read raw data, about the songs, in json format from S3 putting
+    the data in the right format (indicated schema).
+    Then, from this first table, the dimensions tables song_table
+    and artists_table are created and saved back into the specified local folder.
+
+    Args:
+        spark: SparkSession to handle data using Spark;
+        input_data: general path where the data resides locally;
+        output_data: folder's path where the new tables will be stored.
+    """
+
     # get filepath to song data file
     song_data = os.path.join(input_data, 'song_data')
     
@@ -78,6 +95,18 @@ def process_song_data(spark, input_data, output_data):
 
 
 def process_log_data(spark, input_data, output_data):
+    """Function to read raw data, about logs and songs, in json format from S3 putting
+    the data in the right format (indicated schema).
+    Then, from this first table, the dimensions tables users_table
+    and time_table as well as the fact table songplays_table are created 
+    and saved into the specified local folder.
+
+    Args:
+        spark: SparkSession to handle data using Spark;
+        input_data: general path where the data resides locally;
+        output_data: folder's path where the new tables will be stored.
+    """
+
     # get filepath to log data file
     log_data = os.path.join(input_data, 'log_data')
 
@@ -157,6 +186,11 @@ def process_log_data(spark, input_data, output_data):
 
 
 def main():
+    """Function to create a SparkSession a parses it with input and output paths
+    into the functions to process the raw data from the desired local path and 
+    save it into the chosen destination.
+    """
+
     spark = create_spark_session()
     input_data = "./data"
     output_data = "./created_tables/"

@@ -16,7 +16,15 @@ os.environ['AWS_ACCESS_KEY_ID']=config['AWS']['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS']['AWS_SECRET_ACCESS_KEY']
 
 
+
 def create_spark_session():
+    """This functions simply creates a spark session 
+    with the hadoop extention loaded for reading data 
+    from the S3.
+
+    Returns:
+        spark: an object containing a SparkSession. 
+    """
     spark = SparkSession \
         .builder \
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
@@ -25,6 +33,18 @@ def create_spark_session():
 
 
 def process_song_data(spark, input_data, output_data):
+    """Function to read raw data, about the songs, in json format from S3 putting
+    the data in the right format (indicated schema).
+    Then, from this first table, the dimensions tables song_table
+    and artists_table are created and saved back into the specified 
+    S3 bucket.
+
+    Args:
+        spark: SparkSession to handle data using Spark;
+        input_data: general path where the data resides on S3;
+        output_data: bucket and folder where the new tables will be stored.
+    """
+
     # get filepath to song data file
     song_data = os.path.join(input_data, 'song_data')
     
@@ -76,6 +96,18 @@ def process_song_data(spark, input_data, output_data):
 
 
 def process_log_data(spark, input_data, output_data):
+    """Function to read raw data, about logs and songs, in json format from S3 putting
+    the data in the right format (indicated schema).
+    Then, from this first table, the dimensions tables users_table
+    and time_table as well as the fact table songplays_table are created 
+    and saved back into the specified S3 bucket.
+
+    Args:
+        spark: SparkSession to handle data using Spark;
+        input_data: general path where the data resides on S3;
+        output_data: bucket and folder where the new tables will be stored.
+    """
+    
     # get filepath to log data file
     log_data = os.path.join(input_data, 'log_data')
 
@@ -179,6 +211,11 @@ def process_log_data(spark, input_data, output_data):
 
 
 def main():
+    """Function to create a SparkSession a parses it with input and output paths
+    into the functions to process the raw data from the desired S3 path and 
+    save it into the chosen destination.
+    """
+
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
     output_data = "s3://data-lakes-spark-project/created_tables_S3/"

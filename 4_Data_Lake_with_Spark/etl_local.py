@@ -38,7 +38,7 @@ def create_spark_session():
 def process_song_data(spark, input_data, output_data):
     """Function to read raw data, about the songs, in json format from S3 putting
     the data in the right format (indicated schema).
-    Then, from this first table, the dimensions tables song_table
+    Then, from this first table, the dimensions tables songs_table
     and artists_table are created and saved back into the specified local folder.
 
     Args:

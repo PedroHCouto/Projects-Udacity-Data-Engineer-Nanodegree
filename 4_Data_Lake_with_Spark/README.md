@@ -24,16 +24,16 @@
 </details>
 
 ## Goal
-The project's goal is use Apache Spark locally as well as in a AWS EMR Cluster in order to process data in small and big sizes.     
+The project's goal is to use Apache Spark locally as well as in a AWS EMR Cluster in order to process data both in small and big sizes.     
 --- 
 ## About the project      
 
-The project takes place as a simulation of a Spark + Data Lake Solution for raw data processing purpose of a fictional music streaming startup called Sparkify.     
+The project takes place as a simulation of a Spark + Data Lake Solution for the raw data processing purpose of fictional music streaming startup called Sparkify.     
 
-The Cloud Data Lake allows to store high amount of data, regarding its type (structured or not). It also costs less when compared with on-premise storage system and brings the AWS expertise for management and security.     
+The Cloud Data Lake allows to storage a high amount of data, regarding its type (structured or not). It also costs less when compared with an on-premise storage system and brings the AWS expertise for management and security.     
 Spark brings flexibility, lower costs, and power to process and analyse big data in any steps that should be necessary.     
 
-**So in this project both tools will are used to read data from a S3 bucket, process it in order to create fact and dimensions tables, and load it back to the desired S3 bucket where it will be available for any analytical team!**      
+**So in this project both tools will are used to read data from an S3 bucket, process it in order to create fact and dimensions tables, and load it back to the desired S3 bucket where it will be available for any analytical team!** 
 
 ---
 ## Data
@@ -110,7 +110,7 @@ There the first insights about the data were gained, data types and structures f
 
 ## ETL
 
-Based on the raw data presented before, exploration and prototyping done in the `prototype.ipynb` two etl were develop.     
+Based on the raw data presented before, exploration and prototyping done in the `prototype.ipynb` two etl were developed.     
 
 **The first one, `etl_local.py`, implement the following steps:**     
 - Create a spark session with no additional packages;     
@@ -122,21 +122,21 @@ Based on the raw data presented before, exploration and prototyping done in the 
 - Then a `main` is then used to define the path and run all functions mentioned above;      
 With this pipeline it is possible to process the data and check if everything went as desired before moving to the cloud where errors are harder to catch and, therefore, to solve.      
 
-**The second one, `etl_EMR.py`, implement almost the same steps, the major difference are:**     
+**The second one, `etl_EMR.py`, implement almost the same steps, the major differences are:**     
 - Create a spark session with hadoop package for reading the data from S3;     
 
-- The `configparser` package is used to make environment variable the sensible infos present in the `dl.cfg` file;      
+- The `configparser` package is used to make environment variable the sensible info present in the `dl.cfg` file;      
 
-- All the input and output paths are S3 buckets and folders path. Therefore it the `read.json()` and `write.csv()` commands must take these paths as arguments. Also S3a protocol is used;     
-With this second implementation we can process a huge amount of data and errors are not expected to occur.     
+- All the input and output paths are S3 buckets and folders path. Therefore it the `read.json()` and `write.csv()` commands must take these paths as arguments. Also, S3a protocol is used;     
+With this second implementation, we can process a huge amount of data and errors are not expected to occur.  
 ---
 
 ## Files
 - **prototype.ipynb:** notebook to explore, prototype and correct the first errors;    
 
-- **etl_local.py:** as mentioned above, it does the locally processing of a small chunk of data in order to refine the implementation and avoid errors;        
+- **etl_local.py:** as mentioned above, it does the local processing of a small chunk of data in order to refine the implementation and avoid errors;        
 
-- **etl_EMR.py:** as mentioned above, it is a adaptation of  `etl_local.py` to a cloud (EMR) environment where it should be used to process big volumes of data;     
+- **etl_EMR.py:** as mentioned above, it is an adaptation of  `etl_local.py` to a cloud (EMR) environment where it should be used to process big volumes of data;     
 
 - **data:** folder where a small chunk of the originals log and song data are stored;     
 
@@ -154,7 +154,7 @@ For local usage just make sure to set the right paths and run `python etl_local.
 For a distributed online used in the cloud, do the following:   
 1. Deploy a Cluster on AWS EMR and make sure to have a key-pair **.pem** file;       
 
-2. Upload the `etl_EMR.py` and `dl.cfg` files to the EMR Cluster through the terminal as following:  
+2. Upload the `etl_EMR.py` and `dl.cfg` files to the EMR Cluster through the terminal as follows:  
 `scp -i YOUR-KEY-PAIR.pem etl_EMR.py dl.cfg hadoop@ePATH-OF-THE-EMR-MASTER-NODE`
 
 3. Connect with the cluster with the following command in the terminal:    

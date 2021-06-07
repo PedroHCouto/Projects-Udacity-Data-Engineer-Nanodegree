@@ -72,7 +72,8 @@ def process_song_data(spark, input_data, output_data):
                      'year',
                      'duration']
 
-    songs_table = df.selectExpr(columns_songs)
+    # create songs_table and drop duplicated rows 
+    songs_table = df.selectExpr(columns_songs).dropDuplicates()
     
     # write songs table to parquet files partitioned by year and artist
     songs_table.write.csv(os.path.join(output_data, 'songs_table'), 
@@ -87,7 +88,8 @@ def process_song_data(spark, input_data, output_data):
                        'artist_latitude as latitude',
                        'artist_longitude as longitude']
 
-    artists_table = df.selectExpr(columns_artists)
+    # create artists_table and drop duplicated rows 
+    artists_table = df.selectExpr(columns_artists).dropDuplicates()
     
     # write artists table to parquet files
     artists_table.write.csv(os.path.join(output_data, 'artists_table'),
@@ -143,7 +145,9 @@ def process_log_data(spark, input_data, output_data):
                      'lastName as last_name',
                      'gender',
                      'level']   
-    users_table = df.selectExpr(columns_users)
+                     
+    # create users_table and drop duplicated rows                      
+    users_table = df.selectExpr(columns_users).dropDuplicates()
     
     # write users table to parquet files
     users_table.write.csv(os.path.join(output_data, 'users_table'), 
@@ -161,7 +165,9 @@ def process_log_data(spark, input_data, output_data):
                     F.month('start_time').alias('month'),
                     F.year('start_time').alias('year'),
                     F.dayofweek('start_time').alias('weekday')]
-    time_table = df.select(columns_time)
+    
+    # create time table and drop duplicated rows                
+    time_table = df.select(columns_time).dropDuplicates()
 
     # write time table to parquet files partitioned by year and month
     time_table.write.csv(os.path.join(output_data, 'time_table'), 

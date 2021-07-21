@@ -2,6 +2,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.contrib.hooks.aws_hook import AwsHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from plugins.helpers.sql_create_tables import CreateTable
 
 class StageToRedshiftOperator(BaseOperator):
     """Operator to get data from AWS S3 and stage it into Redshift. 
@@ -60,7 +61,13 @@ class StageToRedshiftOperator(BaseOperator):
         aws_credentials = aws_hook.get_credentials()
         redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)
 
-        self.log.info(f'Clearing data from destination table {self.table}')
+        # Create table if not exists and delete any previous reccords
+        self.log.info(f'Setting up the {self.table} table')
+        self.log.info(f'')
+        if "events" in self.table:
+            redshift_hook.run(CreateTable.create_staging_events_table.format(self.table))
+        else:
+            redshift_hook.run(CreateTable.create_staging_songs_table.format(self.table))
         redshift_hook.run(f'DELETE FROM {self.table}')
 
         self.log.info('Copying data from S3 to Redsift')

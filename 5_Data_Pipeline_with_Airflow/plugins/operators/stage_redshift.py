@@ -51,7 +51,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.delimeter = delimiter
         self.json_type = json_type
 
-    def execute(self, context):
+    def execute(self, context):  
         self.log.info('StageToRedshiftOperator starting')
         
         # stablish the connections with AWS, Redshift and get the credentials for execute the COPY statements
@@ -74,7 +74,7 @@ class StageToRedshiftOperator(BaseOperator):
             self.ignore_header,
             self.delimeter
         )
-        aws_hook.run(formatted_query)
+        redshift_hook.run(formatted_query)
 
 
 

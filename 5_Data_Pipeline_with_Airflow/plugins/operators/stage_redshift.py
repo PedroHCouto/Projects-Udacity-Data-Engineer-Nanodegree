@@ -21,7 +21,7 @@ class StageToRedshiftOperator(BaseOperator):
 
     template_fields = ('s3_key')
     copy_template = """
-        COPY {},
+        COPY '{}.{}',
         FROM '{}'
         ACCESS_KEY_ID = '{}'
         SECRET_ACCESS_KEY = '{}'
@@ -32,19 +32,21 @@ class StageToRedshiftOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-            redshift_conn_id = "",
-            aws_conn_id = "",
-            table = "",
-            s3_bucket = "",
-            s3_key = "",
+            redshift_conn_id = '',
+            aws_conn_id = '',
+            table = '',
+            database = 'public',
+            s3_bucket = '',
+            s3_key = '',
             ignore_header = 1,
-            delimiter = ",",
-            json_type = "auto",
+            delimiter = ',',
+            json_type = 'auto',
             *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
         self.aws_conn_id = aws_conn_id
+        self.database = database
         self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
@@ -61,27 +63,27 @@ class StageToRedshiftOperator(BaseOperator):
         aws_credentials = aws_hook.get_credentials()
         redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)
 
-        # Create table if not exists and delete any previous reccords
-        self.log.info(f'Setting up the {self.table} table')
-        self.log.info(f'')
-        if "events" in self.table:
-            redshift_hook.run(CreateTable.create_staging_events_table.format(self.table))
-        else:
-            redshift_hook.run(CreateTable.create_staging_songs_table.format(self.table))
-        redshift_hook.run(f'DELETE FROM {self.table}')
 
+        # check which table should be staged
+        self.log.info(f'Creating {self.table} if not Exists')
+        if ['events', 'event'] in self.table:
+            table = 'staging_events'
+        else:
+            table = 'staging_songs' 
+
+        # Render the S3_Key and run the copy statement against redshift
         self.log.info('Copying data from S3 to Redsift')
         s3_key_rendered = self.s3_key.format(**context)
         path = f's3://{self.s3_bucket}/{s3_key_rendered}'
         formatted_query = StageToRedshiftOperator.copy_template.format(
-            self.table,
+            self.database,
+            table,
             path,
             aws_credentials.access_key,
             aws_credentials.secret_key,
             self.ignore_header,
-            self.delimeter
+            self.delimeter,
+            self.json_type
         )
         redshift_hook.run(formatted_query)
-
-
 

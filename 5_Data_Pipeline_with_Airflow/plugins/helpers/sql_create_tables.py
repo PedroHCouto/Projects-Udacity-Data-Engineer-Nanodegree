@@ -1,7 +1,7 @@
 class CreateTable():
     # create staging tables
-    create_staging_events_table= ("""
-        CREATE TABLE IF NOT EXISTS {} (
+    create_staging_events_table = ("""
+        CREATE TABLE IF NOT EXISTS {}.staging_events (
             artist              VARCHAR,
             auth                VARCHAR,
             first_name          VARCHAR,
@@ -23,7 +23,7 @@ class CreateTable():
         """)
 
     create_staging_songs_table = ("""
-        CREATE TABLE IF NOT EXISTS {}} (
+        CREATE TABLE IF NOT EXISTS {}.staging_songs (
             num_songs           INTEGER,
             artist_id           VARCHAR,
             artist_latitude     VARCHAR,
@@ -39,7 +39,7 @@ class CreateTable():
 
     # create fact and dimension tables
     songplay_table_create = ("""
-    CREATE TABLE IF NOT EXISTS songplay_table (
+    CREATE TABLE IF NOT EXISTS {}.songplays (
         songplay_id     INTEGER        IDENTITY(0, 1) NOT NULL PRIMARY KEY distkey,
         start_time      TIMESTAMP      NOT NULL,
         user_id         VARCHAR        NOT NULL,
@@ -52,7 +52,7 @@ class CreateTable():
     """)
 
     user_table_create = ("""
-    CREATE TABLE IF NOT EXISTS user_table (
+    CREATE TABLE IF NOT EXISTS {}.{} (
         user_id         VARCHAR        NOT NULL PRIMARY KEY,
         first_name      VARCHAR,
         last_name       VARCHAR,
@@ -62,7 +62,7 @@ class CreateTable():
     """)
 
     song_table_create = ("""
-    CREATE TABLE IF NOT EXISTS song_table (
+    CREATE TABLE IF NOT EXISTS {}.{} (
         song_id         VARCHAR        NOT NULL PRIMARY KEY sortkey,
         title           TEXT           NOT NULL,
         artist_id       VARCHAR        NOT NULL,
@@ -72,7 +72,7 @@ class CreateTable():
     """)
 
     artist_table_create = ("""
-    CREATE TABLE IF NOT EXISTS artist_table (
+    CREATE TABLE IF NOT EXISTS {}.{} (
         artist_id       VARCHAR        NOT NULL PRIMARY KEY sortkey,
         name            TEXT           NOT NULL,
         location        VARCHAR,
@@ -82,7 +82,7 @@ class CreateTable():
     """)
 
     time_table_create = ("""
-    CREATE TABLE IF NOT EXISTS time_table (
+    CREATE TABLE IF NOT EXISTS {}.{} (
         time_id         INTEGER        IDENTITY(1, 1) PRIMARY KEY distkey,
         start_time      TIMESTAMP      NOT NULL,
         hour            INTEGER        NOT NULL,

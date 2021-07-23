@@ -6,3 +6,4 @@ Sparkifydb_ERD.pdf
 */Review*
 *.pem
 */logs*
+.vscode

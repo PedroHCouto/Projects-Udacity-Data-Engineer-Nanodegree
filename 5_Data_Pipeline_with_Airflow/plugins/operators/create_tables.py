@@ -4,11 +4,19 @@ from airflow.utils.decorators import apply_defaults
 from plugins.helpers.sql_create_tables import CreateTable
 
 class CreateTablesOperator(BaseOperator):
-    """
+    """Class for creating the staging, fact and dimensions tables that should be used in the project
+
+    This operator aims to bring more parallelization to the DAG and should be put, in a latter step,
+    in a SubDAG.
+
+    Through this class the user gains the possibility to chose the destination database where the
+    tables should be created, as well as the names of the dimension tables.
 
     
     Args:
-        BaseOperator ([type]): [description]
+       redshift_conn_id (str): Postgres connection name created by the user on Airflow; 
+       database (str): destination database where the table should be created;
+       table (str): name of the table o be created.
     """
 
     @apply_defaults

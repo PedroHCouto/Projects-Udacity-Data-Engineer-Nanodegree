@@ -66,10 +66,13 @@ class StageToRedshiftOperator(BaseOperator):
 
         # check which table should be staged
         self.log.info(f'Creating {self.table} if not Exists')
-        if ['events', 'event'] in self.table:
-            table = 'staging_events'
+        if 'event' in self.table:
+            self.table = 'staging_events'
         else:
-            table = 'staging_songs' 
+            self.table = 'staging_songs' 
+
+        self.log.info("Clearing data from destination Redshift table")
+        redshift_hook.run("DELETE FROM {}.{}".format(self.database, self.table))
 
         # Render the S3_Key and run the copy statement against redshift
         self.log.info('Copying data from S3 to Redsift')
@@ -77,7 +80,7 @@ class StageToRedshiftOperator(BaseOperator):
         path = f's3://{self.s3_bucket}/{s3_key_rendered}'
         formatted_query = StageToRedshiftOperator.copy_template.format(
             self.database,
-            table,
+            self.table,
             path,
             aws_credentials.access_key,
             aws_credentials.secret_key,
@@ -86,4 +89,3 @@ class StageToRedshiftOperator(BaseOperator):
             self.json_type
         )
         redshift_hook.run(formatted_query)
-

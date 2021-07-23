@@ -33,7 +33,7 @@ class CreateTablesOperator(BaseOperator):
 
 
     def execute(self, context):
-        self.log.info("Starting the create_staging_tables operator")
+        self.log.info("CreateTablesOperator starting")
 
         # Connects to redshift
         self.log.info("Connecting to Redshift")

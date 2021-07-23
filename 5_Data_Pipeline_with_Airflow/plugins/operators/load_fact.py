@@ -32,7 +32,7 @@ class LoadFactOperator(BaseOperator):
         self.table = table
 
     def execute(self, context):
-        self.log.info('Load fact tables starting')
+        self.log.info('LoadFactOperator starting')
         
         # Connects to Redshift 
         self.log.info('Creating a connection with Redshift')

@@ -26,7 +26,7 @@ class LoadDimensionOperator(BaseOperator):
                  source_database = 'public',
                  target_database = 'public',
                  table = '',
-                 append_mode = True,
+                 append_mode = False,
                  primary_key = None,
                  *args, **kwargs):
 

@@ -35,7 +35,7 @@ class LoadFactOperator(BaseOperator):
         self.log.info('LoadFactOperator starting')
         
         # Connects to Redshift 
-        self.log.info('Creating a connection with Redshift')
+        self.log.info('Connecting to Redshift')
         redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)
 
         # Insert / append data to the fact table

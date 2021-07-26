@@ -58,7 +58,7 @@ class StageToRedshiftOperator(BaseOperator):
         self.log.info('StageToRedshiftOperator starting')
         
         # stablish the connections with AWS, Redshift and get the credentials for execute the COPY statements
-        self.log.info(f'StageToRedshiftOperator connecting with {self.aws_conn_id} and {self.redshift_conn_id}')
+        self.log.info(f'StageToRedshiftOperator connecting to {self.aws_conn_id} and {self.redshift_conn_id}')
         aws_hook = AwsHook(aws_conn_id = self.aws_conn_id)
         aws_credentials = aws_hook.get_credentials()
         redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)

@@ -12,7 +12,7 @@ class LoadDimensionOperator(BaseOperator):
     Args:
         redshift_conn_id (str): Postgres connection name created by the user on Airflow;
         source_database (str): Database where the staging tables are located;
-        target_database (str): Database where the fact table is located;
+        target_database (str): Database where the dimension table is located;
         table (str): dimensional table which will receive the data
         append_mode (Bool): True if the user desire to append the new data to the existing rows
         primary_key (str): name of primary key for comparingson in order to avoid dupplicated 
@@ -42,7 +42,7 @@ class LoadDimensionOperator(BaseOperator):
         self.log.info('LoadDimensionOperator starting')
 
         # Connects to Redshift 
-        self.log.info('Creating a connection with Redshift')
+        self.log.info('Creating a connection to Redshift')
         redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)
 
         # Check the mode and processing it as desired                

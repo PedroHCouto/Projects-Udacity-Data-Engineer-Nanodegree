@@ -2,11 +2,14 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+
+from operators.create_tables import CreateTablesOperator
 from operators.stage_redshift import StageToRedshiftOperator
 from operators.load_fact import LoadFactOperator
-from operators.load_dimension import LoadDimensionOperator
-from operators.data_quality import DataQualityOperator
 from helpers.sql_queries import SqlQueries
+
+from airflow.operators.subdag_operator import SubDagOperator
+from subdag import create_load_quality
 
 # AWS_KEY = os.environ.get('AWS_KEY')
 # AWS_SECRET = os.environ.get('AWS_SECRET')
@@ -19,66 +22,155 @@ default_args = {
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 3,
+    'catchup': False,
     'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG('udac_example_dag',
-          default_args=default_args,
-          description='Load and transform data in Redshift with Airflow',
-          schedule_interval='0 * * * *',
-          catchup = False
-        )
+dag = DAG('sparkify_pipeline',
+          default_args = default_args,
+          description = 'Load and transform data in Redshift with Airflow',
+          schedule_interval = '@daily')
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
+create_stage_events_table = CreateTablesOperator(
+    task_id = 'Create_stage_events_table',
+    dag = dag,
+    redshift_conn_id = 'redshift',
+    target_database = 'public',
+    table = 'events')
+
 stage_events_to_redshift = StageToRedshiftOperator(
-    task_id='Stage_events',
-    dag=dag
-)
+    task_id = 'Stage_events',
+    dag = dag,
+    redshift_conn_id = 'redshift',
+    aws_conn_id = 'aws_credentials', 
+    table = 'events',
+    s3_bucket = 'udacity-dend',
+    s3_key = 'log_data',
+    ignore_header = 1,
+    delimiter = ',',
+    json_type = 'auto')
+
+create_stage_songs_table = CreateTablesOperator(
+    task_id = "Create_stage_songs_table",
+    dag = dag,
+    redshift_conn_id = 'redshift',
+    target_database = 'public',
+    table = 'songs')
 
 stage_songs_to_redshift = StageToRedshiftOperator(
     task_id='Stage_songs',
-    dag=dag
-)
+    dag=dag,
+    redshift_conn_id = 'redshift',
+    aws_conn_id = 'aws_credentials', 
+    table = 'songs',
+    s3_bucket = 'udacity-dend',
+    s3_key = 'song_data',
+    ignore_header = 1,
+    delimiter = ',',
+    json_type = 'auto')
+
+create_fact_table = CreateTablesOperator(
+    task_id = 'Create_fact_table',
+    dag = dag,
+    redshift_conn_id = 'redshift',
+    target_database = 'public',
+    table = 'songplays')
 
 load_songplays_table = LoadFactOperator(
-    task_id='Load_songplays_fact_table',
-    dag=dag
-)
+    task_id = 'Load_songplays_fact_table',
+    dag = dag,
+    redshift_conn_id = 'redshift',
+    source_database = 'public',
+    target_database = 'public',
+    table = 'songplays')
 
-load_user_dimension_table = LoadDimensionOperator(
-    task_id='Load_user_dim_table',
-    dag=dag
-)
+task_id_user_table = 'create_load_check_user_table_subdag'
+user_subdag_task = SubDagOperator(
+    subdag = create_load_quality(
+        'sparkify_pipeline',
+        task_id_user_table,
+        'redshift',
+        'public',
+        'public',
+        'user',
+        False,
+        None,
+        ['SELECT count(*) FROM {}'],
+        [0],
+        start_date = default_args['start_date'],
+    ),
+    task_id = task_id_user_table,
+    dag = dag)
 
-load_song_dimension_table = LoadDimensionOperator(
-    task_id='Load_song_dim_table',
-    dag=dag
-)
+task_id_song_table = 'create_load_check_song_table_subdag'
+song_subdag_task = SubDagOperator(
+    subdag = create_load_quality(
+        'sparkify_pipeline',
+        task_id_song_table,
+        'redshift',
+        'public',
+        'public',
+        'song',
+        False,
+        None,
+        ['SELECT count(*) FROM {}'],
+        [0],
+        start_date = default_args['start_date'],
+    ),
+    task_id = task_id_song_table,
+    dag = dag)
 
-load_artist_dimension_table = LoadDimensionOperator(
-    task_id='Load_artist_dim_table',
-    dag=dag
-)
+task_id_artist_table = 'create_load_check_artist_table_subdag'
+artist_subdag_task = SubDagOperator(
+    subdag = create_load_quality(
+        'sparkify_pipeline',
+        task_id_artist_table,
+        'redshift',
+        'public',
+        'public',
+        'artist',
+        False,
+        None,
+        ['SELECT count(*) FROM {}'],
+        [0],
+        start_date = default_args['start_date'],
+    ),
+    task_id = task_id_artist_table,
+    dag = dag)
 
-load_time_dimension_table = LoadDimensionOperator(
-    task_id='Load_time_dim_table',
-    dag=dag
-)
+task_id_time_table = 'create_load_check_time_table_subdag'
+time_subdag_task = SubDagOperator(
+    subdag = create_load_quality(
+        'sparkify_pipeline',
+        task_id_time_table,
+        'redshift',
+        'public',
+        'public',
+        'time',
+        False,
+        None,
+        ['SELECT count(*) FROM {}'],
+        [0],
+        start_date = default_args['start_date']
+    ),
+    task_id = task_id_time_table,
+    dag = dag)
 
-run_quality_checks = DataQualityOperator(
-    task_id='Run_data_quality_checks',
-    dag=dag
-)
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
+
 # Dependencies setup to create the workflow
-start_operator >> [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
+start_operator >> create_stage_events_table >> stage_events_to_redshift
+start_operator >> create_stage_songs_table >> stage_songs_to_redshift
 
-load_songplays_table >> [load_user_dimension_table,
-                        load_song_dimension_table,
-                        load_artist_dimension_table,
-                        load_time_dimension_table] >> run_quality_checks
+[stage_events_to_redshift, stage_songs_to_redshift] >> create_fact_table >> load_songplays_table
 
-run_quality_checks >> end_operator
+load_songplays_table >> [user_subdag_task,
+                        song_subdag_task,
+                        artist_subdag_task,
+                        time_subdag_task] >> end_operator
+
+

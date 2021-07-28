@@ -1,7 +1,7 @@
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
-from plugins.helpers.sql_queries import SqlQueries
 from airflow.utils.decorators import apply_defaults
+from helpers.sql_queries import SqlQueries
 
 class LoadDimensionOperator(BaseOperator):
     """Operator for uploading from the staging and fact tables into the dimension tables.

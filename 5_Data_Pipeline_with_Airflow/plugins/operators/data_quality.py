@@ -18,7 +18,7 @@ class DataQualityOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 redshift_conn_id = 'redshift_conn_id',
+                 redshift_conn_id = 'redshift',
                  target_database = 'public',
                  table = '',
                  check_quality_queries = [],

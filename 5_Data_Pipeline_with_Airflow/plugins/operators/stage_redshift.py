@@ -2,7 +2,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.contrib.hooks.aws_hook import AwsHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
-from plugins.helpers.sql_create_tables import CreateTable
+from helpers.sql_create_tables import CreateTable
 
 class StageToRedshiftOperator(BaseOperator):
     """Operator to get data from AWS S3 and stage it into Redshift. 
@@ -32,7 +32,7 @@ class StageToRedshiftOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-            redshift_conn_id = '',
+            redshift_conn_id = 'redsshift',
             aws_conn_id = '',
             table = '',
             database = 'public',

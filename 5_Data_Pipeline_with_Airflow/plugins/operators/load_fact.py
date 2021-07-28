@@ -1,8 +1,8 @@
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
-from plugins.helpers.sql_queries import SqlQueries
-from plugins.helpers.sql_create_tables import CreateTable
+from helpers.sql_queries import SqlQueries
+from helpers.sql_create_tables import CreateTable
 
 class LoadFactOperator(BaseOperator):
     """Operator for Extracting data from the stage tables, Transforming data elements
@@ -19,7 +19,7 @@ class LoadFactOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 redshift_conn_id = '',
+                 redshift_conn_id = 'redshift',
                  source_database = 'public',
                  target_database = 'public',
                  table = 'songplays',

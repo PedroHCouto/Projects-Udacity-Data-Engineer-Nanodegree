@@ -1,7 +1,7 @@
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
-from plugins.helpers.sql_create_tables import CreateTable
+from helpers.sql_create_tables import CreateTable
 
 class CreateTablesOperator(BaseOperator):
     """Class for creating the staging, fact and dimensions tables that should be used in the project
@@ -21,7 +21,7 @@ class CreateTablesOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-            redshift_conn_id = '',
+            redshift_conn_id = 'redshift',
             target_database = 'public',
             table = '',
             *args, **kwargs):

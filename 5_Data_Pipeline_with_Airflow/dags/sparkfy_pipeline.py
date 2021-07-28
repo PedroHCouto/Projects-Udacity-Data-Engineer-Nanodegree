@@ -29,7 +29,7 @@ default_args = {
 dag = DAG('sparkify_pipeline',
           default_args = default_args,
           description = 'Load and transform data in Redshift with Airflow',
-          schedule_interval = '@daily')
+          schedule_interval = '@monthly')
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
@@ -37,7 +37,7 @@ create_stage_events_table = CreateTablesOperator(
     task_id = 'Create_stage_events_table',
     dag = dag,
     redshift_conn_id = 'redshift',
-    target_database = 'public',
+    target_schema = 'public',
     table = 'events')
 
 stage_events_to_redshift = StageToRedshiftOperator(
@@ -50,13 +50,13 @@ stage_events_to_redshift = StageToRedshiftOperator(
     s3_key = 'log_data',
     ignore_header = 1,
     delimiter = ',',
-    json_type = 'auto')
+    json_type = 's3://udacity-dend/log_json_path.json')
 
 create_stage_songs_table = CreateTablesOperator(
     task_id = "Create_stage_songs_table",
     dag = dag,
     redshift_conn_id = 'redshift',
-    target_database = 'public',
+    target_schema = 'public',
     table = 'songs')
 
 stage_songs_to_redshift = StageToRedshiftOperator(
@@ -75,15 +75,15 @@ create_fact_table = CreateTablesOperator(
     task_id = 'Create_fact_table',
     dag = dag,
     redshift_conn_id = 'redshift',
-    target_database = 'public',
+    target_schema = 'public',
     table = 'songplays')
 
 load_songplays_table = LoadFactOperator(
     task_id = 'Load_songplays_fact_table',
     dag = dag,
     redshift_conn_id = 'redshift',
-    source_database = 'public',
-    target_database = 'public',
+    source_schema = 'public',
+    target_schema = 'public',
     table = 'songplays')
 
 task_id_user_table = 'create_load_check_user_table_subdag'

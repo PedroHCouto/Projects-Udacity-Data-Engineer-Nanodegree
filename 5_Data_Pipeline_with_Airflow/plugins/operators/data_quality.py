@@ -10,7 +10,7 @@ class DataQualityOperator(BaseOperator):
 
     Args:
         redshift_conn_id (str): Postgres connection name created by the user on Airflow;
-        target_database (str): Database where the table is located;
+        target_schema (str): Database where the table is located;
         table (str): name of the table that will be tested;
         queries (list): list of queries  that should be performed against the table;
         failure_results (list): list of results that will determine if the check has passed or failed;
@@ -19,7 +19,7 @@ class DataQualityOperator(BaseOperator):
     @apply_defaults
     def __init__(self,
                  redshift_conn_id = 'redshift',
-                 target_database = 'public',
+                 target_schema = 'public',
                  table = '',
                  check_quality_queries = [],
                  failure_results = [],
@@ -27,7 +27,7 @@ class DataQualityOperator(BaseOperator):
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
-        self.target_database = target_database
+        self.target_schema = target_schema
         self.table = table
         self.check_quality_queries = check_quality_queries
         self.failure_results = failure_results
@@ -40,7 +40,7 @@ class DataQualityOperator(BaseOperator):
 
         result_list = []
 
-        self.log.info(f'Starting the quality checks for the table {self.target_database}.{self.table}')
+        self.log.info(f'Starting the quality checks for the table {self.target_schema}.{self.table}')
         for i in range(0, len(self.check_quality_queries)):
             formatted_query = self.check_quality_queries[i].format(self.database + '.' + self.table)
 

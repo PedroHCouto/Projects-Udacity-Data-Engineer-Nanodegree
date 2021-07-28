@@ -11,8 +11,8 @@ def create_load_quality(
         parent_dag_name,
         task_id,
         redshift_conn_id,
-        source_database,
-        target_database,
+        source_schema,
+        target_schema,
         table,
         append_mode,
         primary_key, 
@@ -29,14 +29,14 @@ def create_load_quality(
         task_id = f'Create_{table}_table',
         dag = dag,
         redshift_conn_id = redshift_conn_id,
-        target_database = target_database,
+        target_schema = target_schema,
         table = table)
 
     load_dimension_task = LoadDimensionOperator(
         task_id = f'Load_dimension_data_into_{table}_table',
         dag = dag,
         redshit_conn_id = redshift_conn_id,
-        source_database = source_database,
+        source_schema = source_schema,
         table = table,
         append_mode = append_mode,
         primary_key = primary_key)
@@ -45,7 +45,7 @@ def create_load_quality(
         task_id = f'Check_the_data_quality_of_{table}',
         dag = dag,
         redshift_conn_id = redshift_conn_id,
-        target_database = target_database,
+        target_schema = target_schema,
         table = table,
         check_quality_queries = check_quality_queries,
         failure_results = failure_results,

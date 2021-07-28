@@ -35,7 +35,7 @@ class StageToRedshiftOperator(BaseOperator):
             redshift_conn_id = 'redsshift',
             aws_conn_id = '',
             table = '',
-            target_database = 'public',
+            target_schema = 'public',
             s3_bucket = '',
             s3_key = '',
             ignore_header = 1,
@@ -46,7 +46,7 @@ class StageToRedshiftOperator(BaseOperator):
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
         self.aws_conn_id = aws_conn_id
-        self.target_database = target_database
+        self.target_schema = target_schema
         self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
@@ -78,7 +78,7 @@ class StageToRedshiftOperator(BaseOperator):
         s3_key_rendered = self.s3_key.format(**context)
         path = f's3://{self.s3_bucket}/{s3_key_rendered}'
         formatted_query = StageToRedshiftOperator.copy_template.format(
-            self.target_database,
+            self.target_schema,
             self.table,
             path,
             aws_credentials.access_key,

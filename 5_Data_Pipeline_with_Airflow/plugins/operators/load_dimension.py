@@ -11,8 +11,8 @@ class LoadDimensionOperator(BaseOperator):
 
     Args:
         redshift_conn_id (str): Postgres connection name created by the user on Airflow;
-        source_database (str): Database where the staging tables are located;
-        target_database (str): Database where the dimension table is located;
+        source_schema (str): Database where the staging tables are located;
+        target_schema (str): Database where the dimension table is located;
         table (str): dimensional table which will receive the data
         append_mode (Bool): True if the user desire to append the new data to the existing rows
         primary_key (str): name of primary key for comparingson in order to avoid dupplicated 
@@ -23,8 +23,8 @@ class LoadDimensionOperator(BaseOperator):
     @apply_defaults
     def __init__(self,
                  redshit_conn_id = 'redshift',
-                 source_database = 'public',
-                 target_database = 'public',
+                 source_schema = 'public',
+                 target_schema = 'public',
                  table = '',
                  append_mode = False,
                  primary_key = None,
@@ -32,8 +32,8 @@ class LoadDimensionOperator(BaseOperator):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshit_conn_id
-        self.source_database = source_database
-        self.target_database = target_database
+        self.source_schema = source_schema
+        self.target_schema = target_schema
         self.table = table
         self.append_mode = append_mode
         self.primary_key = primary_key
@@ -48,18 +48,18 @@ class LoadDimensionOperator(BaseOperator):
         # Check the mode and processing it as desired                
         if self.append_mode == False:
             self.log.info(f'Cleaning {self.table} befeore insterting new data')
-            redshift_hook.run(f'DELETE FROM {self.target_database}.{self.table}')
+            redshift_hook.run(f'DELETE FROM {self.target_schema}.{self.table}')
 
         # Check which table should be targeted in the ETL process
         if 'user' in self.table:
-            query = SqlQueries.user_table_insert.format(source_database = self.source_database)
+            query = SqlQueries.user_table_insert.format(source_schema = self.source_schema)
         elif 'song' in self.table: 
-            query = SqlQueries.song_table_insert.format(source_database = self.source_database)
+            query = SqlQueries.song_table_insert.format(source_schema = self.source_schema)
         elif 'artist' in self.table:
-            query = SqlQueries.artist_table_insert.format(source_database = self.source_database)
+            query = SqlQueries.artist_table_insert.format(source_schema = self.source_schema)
         else:
-            query = SqlQueries.time_table_insert.format(source_database = self.source_database)
-        query = f"""INSERT INTO {self.target_database}.{self.table}
+            query = SqlQueries.time_table_insert.format(source_schema = self.source_schema)
+        query = f"""INSERT INTO {self.target_schema}.{self.table}
             {query}
         """
 
@@ -76,19 +76,19 @@ class LoadDimensionOperator(BaseOperator):
                 
                 INSERT INTO {0}.{1}
                 SELECT * FROM {0}.stage_{1};
-            """.format(self.target_database, 
+            """.format(self.target_schema, 
                        self.table, 
                        query,
                        self.primary_key)
 
         else:
             query = f"""
-                INSERT INTO {self.target_database}.{self.table}
+                INSERT INTO {self.target_schema}.{self.table}
                 {query}
             """
             # Deleting any existing data on the table
             self.log.info("Truncating data from destination Redshift table")
-            redshift_hook.run(f"TRUNCATE TABLE {self.target_database}.{self.table};").format(self.target_database, self.table)
+            redshift_hook.run(f"TRUNCATE TABLE {self.target_schema}.{self.table};").format(self.target_schema, self.table)
 
-        self.info.log(f'Inserting data into {self.target_database}.{self.table}')
+        self.info.log(f'Inserting data into {self.target_schema}.{self.table}')
         redshift_hook.run(query)

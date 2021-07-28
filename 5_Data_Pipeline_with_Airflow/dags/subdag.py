@@ -2,9 +2,9 @@ import datetime
 
 from airflow import DAG
 
-from plugins.operators.create_tables import CreateTable
-from plugins.operators.load_dimension import LoadDimensionOperator
-from plugins.operators.data_quality import DataQualityOperator
+from operators.create_tables import CreateTablesOperator
+from operators.load_dimension import LoadDimensionOperator
+from operators.data_quality import DataQualityOperator
 
 
 def create_load_quality(
@@ -25,7 +25,7 @@ def create_load_quality(
         **kwargs)
 
 
-    create_table_task = CreateTable(
+    create_table_task = CreateTablesOperator(
         task_id = f'Create_{table}_table',
         dag = dag,
         redshift_conn_id = redshift_conn_id,
@@ -37,7 +37,7 @@ def create_load_quality(
         dag = dag,
         redshit_conn_id = redshift_conn_id,
         source_database = source_database,
-        table = '',
+        table = table,
         append_mode = append_mode,
         primary_key = primary_key)
 

@@ -11,8 +11,6 @@ from helpers.sql_queries import SqlQueries
 from airflow.operators.subdag_operator import SubDagOperator
 from subdag import create_load_quality
 
-# AWS_KEY = os.environ.get('AWS_KEY')
-# AWS_SECRET = os.environ.get('AWS_SECRET')
 
 default_args = {
     'owner': 'Pedro Couto',
@@ -29,7 +27,8 @@ default_args = {
 dag = DAG('sparkify_pipeline',
           default_args = default_args,
           description = 'Load and transform data in Redshift with Airflow',
-          schedule_interval = '@monthly')
+          schedule_interval = '@monthly',
+          max_active_runs =  1)
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
@@ -48,8 +47,6 @@ stage_events_to_redshift = StageToRedshiftOperator(
     table = 'events',
     s3_bucket = 'udacity-dend',
     s3_key = 'log_data',
-    ignore_header = 1,
-    delimiter = ',',
     json_type = 's3://udacity-dend/log_json_path.json')
 
 create_stage_songs_table = CreateTablesOperator(
@@ -60,15 +57,13 @@ create_stage_songs_table = CreateTablesOperator(
     table = 'songs')
 
 stage_songs_to_redshift = StageToRedshiftOperator(
-    task_id='Stage_songs',
-    dag=dag,
+    task_id = 'Stage_songs',
+    dag = dag,
     redshift_conn_id = 'redshift',
     aws_conn_id = 'aws_credentials', 
     table = 'songs',
     s3_bucket = 'udacity-dend',
-    s3_key = 'song_data',
-    ignore_header = 1,
-    delimiter = ',',
+    s3_key = 'song_data/A/A/A',
     json_type = 'auto')
 
 create_fact_table = CreateTablesOperator(

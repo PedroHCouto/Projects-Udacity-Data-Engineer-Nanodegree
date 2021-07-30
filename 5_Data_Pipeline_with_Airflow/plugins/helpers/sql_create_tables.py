@@ -40,15 +40,15 @@ class CreateTable():
     # create fact and dimension tables
     songplay_table_create = ("""
     CREATE TABLE IF NOT EXISTS {}.songplays (
-        songplay_id     INTEGER        IDENTITY(0, 1) NOT NULL PRIMARY KEY distkey,
+        songplay_id     VARCHAR        NOT NULL PRIMARY KEY distkey,
         start_time      TIMESTAMP      NOT NULL,
         user_id         VARCHAR        NOT NULL,
-        level           VARCHAR(4)     NOT NULL,
-        song_id         VARCHAR(55)    NOT NULL,
-        artist_id       VARCHAR(55)    NOT NULL,
-        session_id      VARCHAR(55)    NOT NULL,
-        location        TEXT           NOT NULL,
-        user_agent      TEXT           NOT NULL);
+        level           VARCHAR(4),
+        song_id         VARCHAR(55),
+        artist_id       VARCHAR(55),
+        session_id      VARCHAR(55),
+        location        TEXT,
+        user_agent      TEXT);
     """)
 
     user_table_create = ("""

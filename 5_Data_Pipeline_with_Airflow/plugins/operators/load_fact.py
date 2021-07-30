@@ -10,8 +10,8 @@ class LoadFactOperator(BaseOperator):
 
     Args:
         redshift_conn_id (str): Postgres connection name created by the user on Airflow;
-        source_schema (str): Database where the staging tables are located
-        target_schema (str): Database where the fact table is located
+        source_schema (str): schema where the staging tables are located
+        target_schema (str): schema where the fact table is located
         table (str): table name (just for UX, the table will always be called songplays
             in order to not overcomplicate the creation of time table)
     """

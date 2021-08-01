@@ -83,8 +83,7 @@ class CreateTable():
 
     time_table_create = ("""
     CREATE TABLE IF NOT EXISTS {}.{} (
-        time_id         INTEGER        IDENTITY(1, 1) PRIMARY KEY distkey,
-        start_time      TIMESTAMP      NOT NULL,
+        start_time      TIMESTAMP      NOT NULL PRIMARY KEY distkey,
         hour            INTEGER        NOT NULL,
         day             INTEGER        NOT NULL,
         week            INTEGER        NOT NULL,

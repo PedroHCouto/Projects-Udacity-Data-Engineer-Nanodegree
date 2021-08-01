@@ -59,36 +59,34 @@ class LoadDimensionOperator(BaseOperator):
             query = SqlQueries.artist_table_insert.format(source_schema = self.source_schema)
         else:
             query = SqlQueries.time_table_insert.format(source_schema = self.source_schema)
-        query = f"""INSERT INTO {self.target_schema}.{self.table}
-            {query}
-        """
+
 
         if self.append_mode:
             query = """
-                CREATE TEMP TABLE {0}.stage_{1} (LIKE {0}.{1}); 
+                CREATE TEMP TABLE stage_{1} (LIKE {0}.{1}); 
                 
-                INSERT INTO {0}.stage_{1}
+                INSERT INTO stage_{1}
                 {2};
                 
                 DELETE FROM {0}.{1}
-                USING {0}.stage_{1}
-                WHERE {0}.{1}.{3} = {0}.stage_{1}.{3};
+                USING stage_{1}
+                WHERE {0}.{1}.{3} = stage_{1}.{3};
                 
                 INSERT INTO {0}.{1}
-                SELECT * FROM {0}.stage_{1};
+                SELECT * FROM stage_{1};
             """.format(self.target_schema, 
                        self.table, 
                        query,
                        self.primary_key)
 
         else:
-            query = f"""
-                INSERT INTO {self.target_schema}.{self.table}
-                {query}
-            """
             # Deleting any existing data on the table
             self.log.info("Truncating data from destination Redshift table")
-            redshift_hook.run(f"TRUNCATE TABLE {self.target_schema}.{self.table};").format(self.target_schema, self.table)
+            redshift_hook.run(f"TRUNCATE TABLE {self.target_schema}.{self.table};")
+            
+            query = f"""INSERT INTO {self.target_schema}.{self.table}
+                    {query}
+                    """
 
-        self.info.log(f'Inserting data into {self.target_schema}.{self.table}')
+        self.log.info(f'Inserting data into {self.target_schema}.{self.table}')
         redshift_hook.run(query)

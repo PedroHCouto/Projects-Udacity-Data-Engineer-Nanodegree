@@ -20,7 +20,7 @@ class SqlQueries:
     """)
 
     user_table_insert = ("""
-        SELECT distinct userid, firstname, lastname, gender, level
+        SELECT distinct user_id, first_name , last_name, gender, level
         FROM {source_schema}.staging_events
         WHERE page='NextSong'
     """)

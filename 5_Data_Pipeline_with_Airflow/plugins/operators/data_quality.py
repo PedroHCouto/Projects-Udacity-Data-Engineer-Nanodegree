@@ -42,12 +42,12 @@ class DataQualityOperator(BaseOperator):
 
         self.log.info(f'Starting the quality checks for the table {self.target_schema}.{self.table}')
         for i in range(0, len(self.check_quality_queries)):
-            formatted_query = self.check_quality_queries[i].format(self.database + '.' + self.table)
+            formatted_query = self.check_quality_queries[i].format(self.target_schema + '.' + self.table)
 
             result = redshift_hook.get_first(formatted_query)[0]
             result_list.append(result)
 
-            if result == self.failure_result[i]:
+            if result == self.failure_results[i]:
                 raise ValueError(f'Test failed for the {formatted_query} - failure_result: {self.failure_results[i]}')
 
         self.log.info(f'Quality check passed with success with the results {result_list}')

@@ -7,3 +7,4 @@ Sparkifydb_ERD.pdf
 *.pem
 */logs*
 .vscode
+*csv

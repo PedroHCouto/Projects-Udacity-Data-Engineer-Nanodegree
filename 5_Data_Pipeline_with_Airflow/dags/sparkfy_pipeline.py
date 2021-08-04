@@ -87,13 +87,13 @@ user_subdag_task = SubDagOperator(
         'sparkify_pipeline',
         task_id_user_table,
         'redshift',
-        'public',
-        'public',
-        'user',
-        False,
-        None,
-        ['SELECT count(*) FROM {}'],
-        [0],
+        'public', # source schema
+        'public', # target schema
+        'user', # table
+        False,  # append mode
+        None, # primary key in case append mode = True
+        ['SELECT count(*) FROM {}'], # list of queries that should be ran to test the subdag
+        [0], # undesired results
         start_date = default_args['start_date'],
     ),
     task_id = task_id_user_table,

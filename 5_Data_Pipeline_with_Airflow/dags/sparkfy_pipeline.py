@@ -27,7 +27,7 @@ default_args = {
 dag = DAG('sparkify_pipeline',
           default_args = default_args,
           description = 'Load and transform data in Redshift with Airflow',
-          schedule_interval = '@monthly',
+          schedule_interval = '@hourly',
           max_active_runs =  1)
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)

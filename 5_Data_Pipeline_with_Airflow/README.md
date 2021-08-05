@@ -62,7 +62,7 @@ The pipeline can be broken down into the following steps:
      
 The create table tasks could be performed as one step at the beginning, but as the goal is to use as much parallelization as possible and it also make the use of SubDAGs more attractive, the tasks were performed separately.     
 
-**The `sparkfy_pipeline.py` file contains the main DAG where all the tasks mentioned above are implemented. Through it, the user can also define some extra options like start date, end date, scheduled intervals between runs, email that should be receiving an alert in case of failure, dependencies on past, etc.**   
+**The **sparkfy_pipeline.py** file contains the main DAG where all the tasks mentioned above are implemented. Through it, the user can also define some extra options like start date, end date, scheduled intervals between runs, email that should be receiving an alert in case of failure, dependencies on past, etc.**   
 Also, in this file, the operator, subdags, and tasks dependencies are implemented in the pipeline, and the result is the workflow shown in the figure above.
 
 ---
@@ -71,7 +71,7 @@ Also, in this file, the operator, subdags, and tasks dependencies are implemente
 The following operators were developed in order to perform one task and optimize the parallelization. The Operators are:      
 
 ### 1. CreateTablesOperator
-This Operator uses the file `sql_create_tables.py` to create one of the 7 tables possibles (staging_songs, staging_events, songplays, artist, user, time, song).        
+This Operator uses the file **sql_create_tables.py** to create one of the 7 tables possibles (staging_songs, staging_events, songplays, artist, user, time, song).        
 
 The user should provide as an argument the redshift connection, the schema where the table should be created, and the table name. Just by providing the table name, the operator will identify which SQL query should be executed and will create the table.        
 
@@ -82,12 +82,12 @@ Using the table name inputted, the operator performs the copy statement and inse
 It is also possible to use context variables within the s3 key in case the scope should be adjusted.      
 
 ### 3. LoadFactOperator
-This Operator performs the `songplay_table_insert` statement present in the `sql_queries.py` file in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the `CreateTablesOperator`.   
+This Operator performs the **songplay_table_insert** statement present in the **sql_queries.py** file in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the **CreateTablesOperator**.   
 
 Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name.    
 
 ### 4. LoadDimensionOperator
-The Operator also performs one of the four other queries present in the `sql_queries.py` accordingly to the table name inputted while instantiating it.     
+The Operator also performs one of the four other queries present in the **sql_queries.py** accordingly to the table name inputted while instantiating it.     
 
 For this one, the user should Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name as well as if the append mode is True or False. In case the user decides to append data to the dimension table, and not delete the existing elements, the primary key for the table should also be given as input.     
 
@@ -100,17 +100,17 @@ Here the user must input the redshift connection, target schema (where the table
 ## SubDAG
 As shown in the workflow figure, there are four grey blocks that perform a SubDAG for each dimension table. As there are 4 dimension tables and for each one 3 tasks should be performed (create a table, load data, and quality check) it pays off the effort to put in one big SubDAG which performs the 3 tasks and makes it easier to correct bugs, make changes (if necessary) and maintain.   
 
-The `subdag.py` file, located in the dag folder, contains the subdag which demands the following inputs:   
-- `parent_dag_name`: the dag used in the pipeline;
-- `task_id`: desired name for the task;
-- `redshift_conn_id`: redshift connection created in the Airflow web interface;
-- `source_schema`: schema where the fact table is located;
-- `target_schema`: schema where the dimension table should be created/;
-- `table`: name of the table that will be created, receive the data elements and tested;
-- `append_mode`: True if the dimension table should be appended and not truncated;
-- `primary_key`: in case append mode is True, the primary key for the table must be sourced;
-- `check_quality_queries`: list of queries that will be performed to check if the data is present, correct, and meaningful;
-- `failure_results`: a list containing the failure conditions for the queries inputted in the arg above.
+The **subdag.py** file, located in the dag folder, contains the subdag which demands the following inputs:   
+- **parent_dag_name**: the dag used in the pipeline;
+- **task_id**: desired name for the task;
+- **redshift_conn_id**: redshift connection created in the Airflow web interface;
+- **source_schema**: schema where the fact table is located;
+- **target_schema**: schema where the dimension table should be created/;
+- **table**: name of the table that will be created, receive the data elements and tested;
+- **append_mode**: True if the dimension table should be appended and not truncated;
+- **primary_key**: in case append mode is True, the primary key for the table must be sourced;
+- **check_quality_queries**: list of queries that will be performed to check if the data is present, correct, and meaningful;
+- **failure_results**: a list containing the failure conditions for the queries inputted in the arg above.
 
 By using this subdag we went from 12 tasks to just 4 tasks. The more modifications are added to the subdag and workflow, the more the subdag pays off.
 
@@ -118,12 +118,12 @@ By using this subdag we went from 12 tasks to just 4 tasks. The more modificatio
 ## Data
 There are two types of data for this work: song data and log data. Both are stored in S3, which the paths are:     
 
-- Song data: `s3://udacity-dend/song_data`      
-- Log data: `s3://udacity-dend/log_data`     
+- Song data: **s3://udacity-dend/song_data**      
+- Log data: **s3://udacity-dend/log_data**     
 
 The raw data are in json formats and are the following elements:      
-- **song data**: avaliable on `s3://udacity-dend/song_data`. E.g:      
-```
+- **song data**: avaliable on **s3://udacity-dend/song_data**. E.g:      
+**
 {
     "num_songs": 1, 
     "artist_id": "ARJIE2Y1187B994AB7", 
@@ -136,9 +136,9 @@ The raw data are in json formats and are the following elements:
     "duration": 152.92036, 
     "year": 0
 }
-```   
-- **log data**: available on `s3://udacity-dend/log_data`. E.g:     
-```
+**   
+- **log data**: available on **s3://udacity-dend/log_data**. E.g:     
+**
 {
     artist: None,
     auth: "Logged In",
@@ -159,7 +159,7 @@ The raw data are in json formats and are the following elements:
     userAgent: "Mozilla/5.0 Macintosh; Intel Mac OS X 10_9_4...",
     userId: 39
 }
-```
+**
 
 The image below pictures the schema for fact  and dimension tables.     
 
@@ -204,7 +204,7 @@ Once the container is created and initialized for the first time, follow these s
 
 1. Deploy a Cluster on AWS Redshift and make it public accessible;       
 
-2. In the terminal and project folder enter `docker-compose up`. This will initiate the Airflow and within a few minutes the web interface will be on;
+2. In the terminal and project folder enter **docker-compose up**. This will initiate the Airflow and within a few minutes the web interface will be on;
 
 3. In Airflow's admin area, go in connections and create one for redshift and one for aws credentials;                          
 
@@ -216,7 +216,7 @@ Once the container is created and initialized for the first time, follow these s
 6. Click on the Dag to check if the pipeline is running. It should looks like the image below;
 ![image](./images/5_dag_running.png)    
 
-7. Once the running is over and you don't need it for future use, shut down the Redshift Cluster and enter  `docker-compose down` in the terminal.
+7. Once the running is over and you don't need it for future use, shut down the Redshift Cluster and enter  **docker-compose down** in the terminal.
 
 ---
 ## Built with

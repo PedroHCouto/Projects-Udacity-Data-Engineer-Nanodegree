@@ -82,12 +82,12 @@ Using the table name inputted, the operator performs the copy statement and inse
 It is also possible to use context variables within the s3 key in case the scope should be adjusted.      
 
 ### 3. LoadFactOperator
-This Operator performs the **songplay_table_insert** statement present in the **sql_queries.py** in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the **CreateTablesOperator**.   
+This Operator performs the **songplay_table_insert** statement present in the **sql_queries.py** in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the **CreateTablesOperator**.   
 
 Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name.    
 
-### 4. LoadDimensionOperator
-The Operator also performs one of the four other queries present in the **sql_queries.py** accordingly to the table name inputted while instantiating it.     
+### 4. LoadDimensionOperator    
+The Operator also performs one of the four other queries present in the **sql_queries.py** accordingly to the table name inputted while instantiating it.     
 
 For this one, the user should Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name as well as if the append mode is True or False. In case the user decides to append data to the dimension table, and not delete the existing elements, the primary key for the table should also be given as input.     
 
@@ -100,17 +100,17 @@ Here the user must input the redshift connection, target schema (where the table
 ## SubDAG
 As shown in the workflow figure, there are four grey blocks that perform a SubDAG for each dimension table. As there are 4 dimension tables and for each one 3 tasks should be performed (create a table, load data, and quality check) it pays off the effort to put in one big SubDAG which performs the 3 tasks and makes it easier to correct bugs, make changes (if necessary) and maintain.   
 
-The **subdag.py** file, located in the dag folder, contains the subdag which demands the following inputs:   
-- **parent_dag_name**: the dag used in the pipeline;
-- **task_id**: desired name for the task;
+The **subdag.py** file, located in the dag folder, contains the subdag which demands the following inputs:    
+- **parent_dag_name:** the dag used in the pipeline;    
+- **task_id:** desired name for the task;
 - **redshift_conn_id**: redshift connection created in the Airflow web interface;
 - **source_schema**: schema where the fact table is located;
 - **target_schema**: schema where the dimension table should be created/;
 - **table**: name of the table that will be created, receive the data elements and tested;
 - **append_mode**: True if the dimension table should be appended and not truncated;
 - **primary_key**: in case append mode is True, the primary key for the table must be sourced;
-- **check_quality_queries**: list of queries that will be performed to check if the data is present, correct, and meaningful;
-- **failure_results**: a list containing the failure conditions for the queries inputted in the arg above.
+- **check_quality_queries**: list of queries that will be performed to check if the data is present, correct, and meaningful;    
+- **failure_results:** a list containing the failure conditions for the queries inputted in the arg above.
 
 By using this subdag we went from 12 tasks to just 4 tasks. The more modifications are added to the subdag and workflow, the more the subdag pays off.
 

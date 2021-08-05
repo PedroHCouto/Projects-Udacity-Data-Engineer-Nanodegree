@@ -71,7 +71,7 @@ Also, in this file, the operator, subdags, and tasks dependencies are implemente
 The following operators were developed in order to perform one task and optimize the parallelization. The Operators are:      
 
 ### 1. CreateTablesOperator
-This Operator uses the file `sql_create_tables.py` to create one of the 7 tables possibles (staging_songs, staging_events, songplays, artist, user, time, song).        
+This Operator uses the file `sql_create_tables.py` to create one of the 7 tables possibles (staging_songs, staging_events, songplays, artist, user, time, song).        
 
 The user should provide as an argument the redshift connection, the schema where the table should be created, and the table name. Just by providing the table name, the operator will identify which SQL query should be executed and will create the table.        
 
@@ -82,12 +82,12 @@ Using the table name inputted, the operator performs the copy statement and inse
 It is also possible to use context variables within the s3 key in case the scope should be adjusted.      
 
 ### 3. LoadFactOperator
-This Operator performs the `songplay_table_insert` present in the `sql_queries.py` file in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the `CreateTablesOperator`.   
+This Operator performs the `songplay_table_insert` statement present in the `sql_queries.py` file in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the `CreateTablesOperator`.   
 
 Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name.    
 
 ### 4. LoadDimensionOperator
-The Operator also performs one of the four other queries present in the `sql_queries.py` accordingly to the table name inputted while instantiating it.     
+The Operator also performs one of the four other queries present in the `sql_queries.py` accordingly to the table name inputted while instantiating it.     
 
 For this one, the user should Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name as well as if the append mode is True or False. In case the user decides to append data to the dimension table, and not delete the existing elements, the primary key for the table should also be given as input.     
 

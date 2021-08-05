@@ -82,7 +82,7 @@ Using the table name inputted, the operator performs the copy statement and inse
 It is also possible to use context variables within the s3 key in case the scope should be adjusted.      
 
 ### 3. LoadFactOperator
-This Operator performs the **songplay_table_insert** statement present in the **sql_queries.py** file in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the **CreateTablesOperator**.   
+This Operator performs the **songplay_table_insert** statement present in the **sql_queries.py** in order to extract data from the 2 events table, perform some transformations, and load to the fact table created with the **CreateTablesOperator**.   
 
 Here the user should also provide the redshift connection, source schema (where the stage tables are located), target schema (where the fact table is located), and table name.    
 

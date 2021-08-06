@@ -53,31 +53,30 @@ class LoadDimensionOperator(BaseOperator):
         # Check which table should be targeted in the ETL process
         if 'user' in self.table:
             query = SqlQueries.user_table_insert.format(source_schema = self.source_schema)
+            source_table = f'{self.source_schema}.staging_events'
         elif 'song' in self.table: 
             query = SqlQueries.song_table_insert.format(source_schema = self.source_schema)
+            source_table = f'{self.source_schema}.staging_songs'
         elif 'artist' in self.table:
             query = SqlQueries.artist_table_insert.format(source_schema = self.source_schema)
+            source_table = f'{self.source_schema}.staging_songs'
         else:
             query = SqlQueries.time_table_insert.format(source_schema = self.source_schema)
+            source_table = f'{self.source_schema}.songplays'
 
 
         if self.append_mode:
-            query = """
-                CREATE TEMP TABLE stage_{1} (LIKE {0}.{1}); 
-                
-                INSERT INTO stage_{1}
-                {2};
-                
-                DELETE FROM {0}.{1}
-                USING stage_{1}
-                WHERE {0}.{1}.{3} = stage_{1}.{3};
-                
-                INSERT INTO {0}.{1}
-                SELECT * FROM stage_{1};
-            """.format(self.target_schema, 
-                       self.table, 
-                       query,
-                       self.primary_key)
+            # Sources:
+            # - https://docs.aws.amazon.com/redshift/latest/dg/merge-replacing-existing-rows.html
+            # - http://www.silota.com/blog/amazon-redshift-upsert-support-staging-table-replace-rows/
+            query = f"""
+                DELETE FROM {self.target_schema}.{self.table}
+                USING {source_table}
+                WHERE {self.target_schema}.{self.table}.{self.primary_key} = {source_table}.{self.primary_key};
+
+                INSERT INTO {self.target_schema}.{self.table} {query};
+            """
+            
 
         else:
             # Deleting any existing data on the table

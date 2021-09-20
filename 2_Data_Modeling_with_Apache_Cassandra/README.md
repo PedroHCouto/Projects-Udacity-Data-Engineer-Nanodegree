@@ -24,7 +24,7 @@ The main goal of this project is to practice the concepts of a **NoSQL** data mo
 ## About the project 
 The project takes place as a simulation of a Non-Relational database for analytical purpose of a fictional music streaming startup called Sparkify. The startup wants to analyze the data they've been collecting on songs and user activity on their new music streaming app. 
 
-For this type of services, there are to constrains that must assured: high availability and fault-tolerance so the system will be always up and running no matter the problem that may occur on the nodes. A great way to guarantee these properties is using Apache Cassandra, that also brings advantages like optimization for writes.
+For this type of services, there are two constrains that must assured: high availability and fault-tolerance so the system will be always up and running no matter the problem that may occur on the nodes. A great way to guarantee these properties is using Apache Cassandra, that also brings advantages like optimization for writes.
 
 The idea of the project is to create an ETL that can extract the data from different files, transform it into the desired form and load the data elements into different tables. These tables should be created to answer 3 questions:
 1. Give me the artist, song title and song's length in the music app history that was heard during  sessionId = 338, and itemInSession = 4;

@@ -33,7 +33,7 @@ The project takes place as a simulation of a Spark + Data Lake Solution for the 
 The Cloud Data Lake allows to storage a high amount of data, regarding its type (structured or not). It also costs less when compared with an on-premise storage system and brings the AWS expertise for management and security.     
 Spark brings flexibility, lower costs, and power to process and analyse big data in any steps that should be necessary.     
 
-**So in this project both tools will are used to read data from an S3 bucket, process it in order to create fact and dimensions tables, and load it back to the desired S3 bucket where it will be available for any analytical team!** 
+**So in this project both tools will be used to read data from an S3 bucket, process it in order to create fact and dimensions tables, and load it back to the desired S3 bucket where it will be available for any analytical team!** 
 
 ---
 ## Data

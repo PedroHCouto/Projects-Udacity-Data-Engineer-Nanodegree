@@ -122,8 +122,7 @@ There are two types of data for this work: song data and log data. Both are stor
 - Log data: **s3://udacity-dend/log_data**     
 
 The raw data are in json formats and are the following elements:      
-- **song data**: avaliable on **s3://udacity-dend/song_data**. E.g:      
-**
+- **song data**: avaliable on **s3://udacity-dend/song_data**. E.g:       
 {
     "num_songs": 1,     
     "artist_id": "ARJIE2Y1187B994AB7",     
@@ -136,9 +135,8 @@ The raw data are in json formats and are the following elements:
     "duration": 152.92036,      
     "year": 0.    
 }     
-**   
-- **log data**: available on **s3://udacity-dend/log_data**. E.g:     
-**
+    
+- **log data**: available on **s3://udacity-dend/log_data**. E.g:      
 {        
     artist: None,      
     auth: "Logged In",      
@@ -158,8 +156,7 @@ The raw data are in json formats and are the following elements:
     ts: 1541105830796,      
     userAgent: "Mozilla/5.0 Macintosh; Intel Mac OS X 10_9_4...",      
     userId: 39      
-}      
-**
+}         
 
 The image below pictures the schema for fact  and dimension tables.     
 

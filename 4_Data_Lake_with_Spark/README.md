@@ -23,9 +23,9 @@
   </ol>
 </details>
 
-## Goal         
-        
+## Goal                 
 The project's goal is to use Apache Spark locally as well as in a AWS EMR Cluster in order to process data both in small and big sizes.     
+
 --- 
 ## About the project      
 

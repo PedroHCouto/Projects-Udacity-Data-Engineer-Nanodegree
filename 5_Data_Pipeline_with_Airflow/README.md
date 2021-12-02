@@ -125,40 +125,40 @@ The raw data are in json formats and are the following elements:
 - **song data**: avaliable on **s3://udacity-dend/song_data**. E.g:      
 **
 {
-    "num_songs": 1, 
-    "artist_id": "ARJIE2Y1187B994AB7", 
-    "artist_latitude": null, 
-    "artist_longitude": null, 
-    "artist_location": "", 
-    "artist_name": "Line Renaud", 
-    "song_id": "SOUPIRU12A6D4FA1E1", 
-    "title": "Der Kleine Dompfaff", 
-    "duration": 152.92036, 
-    "year": 0
-}
+    "num_songs": 1,     
+    "artist_id": "ARJIE2Y1187B994AB7",     
+    "artist_latitude": null,     
+    "artist_longitude": null,     
+    "artist_location": "",     
+    "artist_name": "Line Renaud",      
+    "song_id": "SOUPIRU12A6D4FA1E1",      
+    "title": "Der Kleine Dompfaff",      
+    "duration": 152.92036,      
+    "year": 0.    
+}     
 **   
 - **log data**: available on **s3://udacity-dend/log_data**. E.g:     
 **
-{
-    artist: None,
-    auth: "Logged In",
-    firstName: "Walter",
-    gender: "M",
-    itemInSession: 0,
-    lastName: "Frye",
-    length: NaN,
-    level: "free",
-    location: "San Francisco-Oakland-Hayward, CA",
-    method: "GET",
-    page: "Home", 
-    registration: 1540919166796,
-    sessionId: 38,
-    song: None
-    status: 200,
-    ts: 1541105830796,
-    userAgent: "Mozilla/5.0 Macintosh; Intel Mac OS X 10_9_4...",
-    userId: 39
-}
+{        
+    artist: None,      
+    auth: "Logged In",      
+    firstName: "Walter",      
+    gender: "M",      
+    itemInSession: 0,      
+    lastName: "Frye",      
+    length: NaN,      
+    level: "free",      
+    location: "San Francisco-Oakland-Hayward, CA",      
+    method: "GET",      
+    page: "Home",       
+    registration: 1540919166796,      
+    sessionId: 38,      
+    song: None      
+    status: 200,      
+    ts: 1541105830796,      
+    userAgent: "Mozilla/5.0 Macintosh; Intel Mac OS X 10_9_4...",      
+    userId: 39      
+}      
 **
 
 The image below pictures the schema for fact  and dimension tables.     
